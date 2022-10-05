@@ -25,6 +25,12 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     waitConfirmations: 5,
   });
 
+  await deploy("StudentDetails", {
+    from: deployer,
+    log: true,
+    waitConfirmations: 5,
+  });
+
   // Getting a previously deployed contract
   const YourContract = await ethers.getContract("YourContract", deployer);
   /*  await YourContract.setPurpose("Hello");
