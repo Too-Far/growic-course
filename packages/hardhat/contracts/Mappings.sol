@@ -28,12 +28,17 @@ contract Mappings {
         _;
     }
 
+    event FundsDeposited(address user, uint256 amount);
+    event ProfileUpdated(address user);
+
     constructor() {
         owner = payable(msg.sender);
     }
 
-    function deposit(uint256 amount_) public {
+    function deposit(uint256 amount_) public payable {
+        require(msg.value == amount_, "ERR: amount value mismatch");
         userToBalance[msg.sender] += amount_;
+        emit FundsDeposited(msg.sender, amount_);
     }
 
     function checkBalance(address user_) public view returns (uint256) {
@@ -42,6 +47,7 @@ contract Mappings {
 
     function setUserDetails(string calldata name_, uint256 age_) public {
         addressToUserData[msg.sender] = KYCUserData(name_, age_);
+        emit ProfileUpdated(msg.sender);
     }
 
     function getUserDetail() public view returns (KYCUserData memory) {
@@ -51,6 +57,7 @@ contract Mappings {
     function addFund(uint256 amount_) public payable onlyDepositors {
         require(msg.value == amount_, "ERR: value amount mismatch");
         userToDeposits[msg.sender] += amount_;
+        emit FundsDeposited(msg.sender, amount_);
     }
 
     function withdraw() public onlyOwner {
